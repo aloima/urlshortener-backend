@@ -1,11 +1,13 @@
 package github.aloima.urlshortener.controller;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import github.aloima.urlshortener.model.URLModel;
@@ -22,19 +24,25 @@ public class URLController {
 
     @GetMapping("/get/{id}")
     public String get(@PathVariable("id") String id) {
-        Optional<URLModel> url = urlService.repository.findById(id);
+        Optional<URLModel> url = urlService.url_repository.findById(id);
         return url.isEmpty() ? "" : url.get().getValue();
     }
 
     @GetMapping("/get-info/{id}")
     public URLModel getInfo(@PathVariable("id") String id) {
-        Optional<URLModel> url = urlService.repository.findById(id);
+        Optional<URLModel> url = urlService.url_repository.findById(id);
         return url.orElseGet(() -> empty_url);
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody URLModel data) {
-        data.setId(this.urlService.generateUniqueId());
-        urlService.repository.save(data);
+    public void add(@RequestBody String value) {
+        URLModel data = new URLModel(value, new Date());
+        urlService.saveUrl(data);
+    }
+
+    @RequestMapping(path = "/delete/{id}", produces = "application/json")
+    public String delete(@PathVariable String id) {
+        boolean response = urlService.deleteUrl(id);
+        return String.format("{\"success\": %s}", response ? "true" : "false");
     }
 }
