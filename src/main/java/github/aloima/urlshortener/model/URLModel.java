@@ -15,6 +15,14 @@ public class URLModel implements Serializable {
     private Date createdAt;
     public long clicks;
 
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getValue() {
         return value;
     }

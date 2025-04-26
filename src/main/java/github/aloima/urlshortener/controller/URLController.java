@@ -2,10 +2,10 @@ package github.aloima.urlshortener.controller;
 
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import github.aloima.urlshortener.model.URLModel;
@@ -32,8 +32,9 @@ public class URLController {
         return url.orElseGet(() -> empty_url);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllExceptions(Exception ex) {
-        return ResponseEntity.ok("error-general");
+    @PostMapping("/add")
+    public void add(@RequestBody URLModel data) {
+        data.setId(this.urlService.generateUniqueId());
+        urlService.repository.save(data);
     }
 }

@@ -27,7 +27,7 @@ public class URLService {
         return id.toString();
     }
 
-    public String getUniqueId() {
+    public String generateUniqueId() {
         String id = generateRandomId();
 
         while (this.repository.existsById(id)) {
