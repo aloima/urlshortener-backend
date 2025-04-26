@@ -12,8 +12,8 @@ import github.aloima.urlshortener.repositories.URLRepository;
 
 @Service
 public class URLService {
-    public final URLRepository url_repository;
-    public final URLDeletionRepository deletion_repository;
+    private final URLRepository url_repository;
+    private final URLDeletionRepository deletion_repository;
     private final SecureRandom random = new SecureRandom();
 
     public URLService(URLRepository url_repository, URLDeletionRepository deletion_repository) {
@@ -33,7 +33,11 @@ public class URLService {
         return id.toString();
     }
 
-    public void saveUrl(URLModel data) {
+    public Optional<URLModel> getURL(String id) {
+        return this.url_repository.findById(id);
+    }
+
+    public void saveURL(URLModel data) {
         String url_id = generateRandomId();
         String deletion_id = generateRandomId();
 
@@ -47,7 +51,7 @@ public class URLService {
         url_repository.save(data);
     }
 
-    public boolean deleteUrl(String id) {
+    public boolean deleteURL(String id) {
         Optional<URLDeletionModel> deletion = deletion_repository.findById(id);
         if (deletion.isEmpty()) return false;
 
