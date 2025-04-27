@@ -14,11 +14,12 @@ import github.aloima.urlshortener.repository.URLRepository;
 public class URLService {
     private final URLRepository url_repository;
     private final URLDeletionRepository deletion_repository;
-    private final SecureRandom random = new SecureRandom();
+    private final SecureRandom random;
 
     public URLService(URLRepository url_repository, URLDeletionRepository deletion_repository) {
         this.url_repository = url_repository;
         this.deletion_repository = deletion_repository;
+        this.random = new SecureRandom();
     }
 
     private String generateRandomId() {
