@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import github.aloima.urlshortener.model.URLModel;
-import github.aloima.urlshortener.services.URLService;
+import github.aloima.urlshortener.service.URLService;
 
 @RestController
 @RequestMapping(value = "/url")
