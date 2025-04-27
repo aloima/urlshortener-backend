@@ -1,4 +1,4 @@
-package github.aloima.urlshortener;
+package com.aloima.urlshortener;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

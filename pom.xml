@@ -8,11 +8,11 @@
 		<version>3.5.0-M3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>github.aloima</groupId>
+	<groupId>com.aloima</groupId>
 	<artifactId>urlshortener</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>urlshortener</name>
-	<description>Demo project for Spring Boot</description>
+	<description>My learning journey of Java Spring.</description>
 	<url/>
 	<licenses>
 		<license/>

@@ -1,4 +1,4 @@
-package github.aloima.urlshortener.model;
+package com.aloima.urlshortener.model;
 
 import java.io.Serializable;
 

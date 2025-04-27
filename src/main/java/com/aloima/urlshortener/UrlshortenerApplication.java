@@ -1,4 +1,4 @@
-package github.aloima.urlshortener;
+package com.aloima.urlshortener;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,14 +1,14 @@
-package github.aloima.urlshortener.service;
+package com.aloima.urlshortener.service;
 
 import java.security.SecureRandom;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import github.aloima.urlshortener.model.URLDeletionModel;
-import github.aloima.urlshortener.model.URLModel;
-import github.aloima.urlshortener.repository.URLDeletionRepository;
-import github.aloima.urlshortener.repository.URLRepository;
+import com.aloima.urlshortener.model.URLDeletionModel;
+import com.aloima.urlshortener.model.URLModel;
+import com.aloima.urlshortener.repository.URLDeletionRepository;
+import com.aloima.urlshortener.repository.URLRepository;
 
 @Service
 public class URLService {
