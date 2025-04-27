@@ -11,15 +11,19 @@ public class URLModel implements Serializable {
     @Id
     private String id;
 
-    private String value;
-    private Date createdAt;
-    public long clicks;
+    private final String value;
+    private final Date createdAt;
+    private long clicks;
 
-    public URLModel() {}
+    public URLModel() {
+        this.value = null;
+        this.createdAt = null;
+    }
 
     public URLModel(String value, Date createdAt) {
         this.value = value;
         this.createdAt = createdAt;
+        this.clicks = 0;
     }
 
     public String getId() {
@@ -36,5 +40,13 @@ public class URLModel implements Serializable {
 
     public Date getCreatedAt() {
         return this.createdAt;
+    }
+
+    public long getClicks() {
+        return this.clicks;
+    }
+
+    public void incrementClicks() {
+        this.clicks += 1;
     }
 }
