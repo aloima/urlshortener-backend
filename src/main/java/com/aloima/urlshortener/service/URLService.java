@@ -12,13 +12,13 @@ import com.aloima.urlshortener.repository.URLRepository;
 
 @Service
 public class URLService {
-    private final URLRepository url_repository;
-    private final URLDeletionRepository deletion_repository;
+    private final URLRepository urlRepository;
+    private final URLDeletionRepository deletionRepository;
     private final SecureRandom random;
 
-    public URLService(URLRepository url_repository, URLDeletionRepository deletion_repository) {
-        this.url_repository = url_repository;
-        this.deletion_repository = deletion_repository;
+    public URLService(URLRepository urlRepository, URLDeletionRepository deletionRepository) {
+        this.urlRepository = urlRepository;
+        this.deletionRepository = deletionRepository;
         this.random = new SecureRandom();
     }
 
@@ -35,30 +35,30 @@ public class URLService {
     }
 
     public Optional<URLModel> getURL(String id) {
-        return this.url_repository.findById(id);
+        return this.urlRepository.findById(id);
     }
 
     public void saveURL(URLModel data) {
         String url_id = generateRandomId();
         String deletion_id = generateRandomId();
 
-        while (this.url_repository.existsById(url_id)) url_id = generateRandomId();
-        while (this.deletion_repository.existsById(deletion_id)) deletion_id = generateRandomId();
+        while (this.urlRepository.existsById(url_id)) url_id = generateRandomId();
+        while (this.deletionRepository.existsById(deletion_id)) deletion_id = generateRandomId();
 
         URLDeletionModel deletion = new URLDeletionModel(deletion_id, url_id);
-        deletion_repository.save(deletion);
+        deletionRepository.save(deletion);
 
         data.setId(url_id);
-        url_repository.save(data);
+        urlRepository.save(data);
     }
 
     public boolean deleteURL(String id) {
-        Optional<URLDeletionModel> deletion = deletion_repository.findById(id);
+        Optional<URLDeletionModel> deletion = deletionRepository.findById(id);
         if (deletion.isEmpty()) return false;
 
         URLDeletionModel deletionModel = deletion.get();
-        this.url_repository.deleteById(deletionModel.getValue());
-        this.deletion_repository.delete(deletionModel);
+        this.urlRepository.deleteById(deletionModel.getValue());
+        this.deletionRepository.delete(deletionModel);
 
         return true;
     }
