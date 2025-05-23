@@ -39,16 +39,16 @@ public class URLService {
     }
 
     public void saveURL(URLModel data) {
-        String url_id = generateRandomId();
-        String deletion_id = generateRandomId();
+        String urlId = generateRandomId();
+        String deletionId = generateRandomId();
 
-        while (this.urlRepository.existsById(url_id)) url_id = generateRandomId();
-        while (this.deletionRepository.existsById(deletion_id)) deletion_id = generateRandomId();
+        while (this.urlRepository.existsById(urlId)) urlId = generateRandomId();
+        while (this.deletionRepository.existsById(deletionId)) deletionId = generateRandomId();
 
-        URLDeletionModel deletion = new URLDeletionModel(deletion_id, url_id);
+        URLDeletionModel deletion = new URLDeletionModel(deletionId, urlId);
         deletionRepository.save(deletion);
 
-        data.setId(url_id);
+        data.setId(urlId);
         urlRepository.save(data);
     }
 
