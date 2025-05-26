@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +38,11 @@ public class URLController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void newURL(@RequestBody String value) {
+    public ResponseEntity<URLModel> newURL(@RequestBody String value) {
         URLModel data = new URLModel(value, new Date());
         urlService.saveURL(data);
+
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(data);
     }
 
     @DeleteMapping("/{id}")
