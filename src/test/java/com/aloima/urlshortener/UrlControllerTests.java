@@ -5,16 +5,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.aloima.urlshortener.component.RandomIdGenerator;
+import com.aloima.urlshortener.model.URLDeletionModel;
 import com.aloima.urlshortener.model.URLModel;
 import com.aloima.urlshortener.repository.URLDeletionRepository;
 import com.aloima.urlshortener.repository.URLRepository;
@@ -22,7 +23,6 @@ import com.aloima.urlshortener.repository.URLRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,39 +40,55 @@ class UrlControllerTests {
     private RandomIdGenerator random;
 
     @Test
-    void invalidURL() throws Exception {
-        this.mockMvc.perform(get("/url/none"))
+    void getInvalidURL() throws Exception {
+        this.mockMvc.perform(get("/url/unknown"))
             .andDo(print())
             .andExpect(status().isNotFound())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().json("{\"error\": \"URL with id 'none' cannot be found.\", \"uri\": \"/url/none\"}"));
+            .andExpect(content().json("{\"error\": \"URL with id 'unknown' cannot be found.\", \"uri\": \"/url/unknown\"}"));
     }
 
     @Test
-    void validURL() throws Exception {
-        when(random.generateRandomId()).thenReturn(1L);
+    void getValidURL() throws Exception {
+        URLModel url = new URLModel("https://example.com/", new Date());
+        url.setId(1L);
+        url.setDeletionId(187L);
 
-        MockHttpServletResponse response = this.mockMvc.perform(post("/url").content("https://example.com/"))
+        when(urlRepository.findById(Long.toString(random.stringToId("1")))).thenReturn(Optional.of(url));
+
+        this.mockMvc.perform(get("/url/1"))
             .andDo(print())
-            .andExpect(status().isCreated())
+            .andExpect(status().isOk())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
             .andExpectAll(
                 jsonPath("$.id").value(1L),
                 jsonPath("$.value").value("https://example.com/"),
                 jsonPath("$.clicks").value(0),
                 jsonPath("$.createdAt").isString()
-            )
-            .andReturn().getResponse();
+            );
+    }
 
-        String responseContent = response.getContentAsString();
-        URLModel url = (new ObjectMapper()).readValue(responseContent, URLModel.class);
-
-        when(urlRepository.findById(Long.toString(url.getId()))).thenReturn(Optional.of(url));
-
-        this.mockMvc.perform(get("/url/" + url.getId()))
+    @Test
+    void deleteInvalidURL() throws Exception {
+        this.mockMvc.perform(delete("/url/unknown"))
             .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(content().json(responseContent));
+            .andExpect(status().isNotFound())
+            .andExpect(content().json("{\"error\": \"URL with id 'unknown' cannot be found, so it cannot be deleted.\", \"uri\": \"/url/unknown\"}"));
+    }
+
+    @Test
+    void deleteValidURL() throws Exception {
+        URLModel url = new URLModel("https://example.com/", new Date());
+        url.setId(1L);
+        url.setDeletionId(187L);
+
+        URLDeletionModel urlDeletion = new URLDeletionModel(1L, 187L);
+
+        when(urlRepository.findById(Long.toString(random.stringToId("1")))).thenReturn(Optional.of(url));
+        when(urlDeletionRepository.findById(Long.toString(random.stringToId("13")))).thenReturn(Optional.of(urlDeletion));
+
+        this.mockMvc.perform(delete("/url/" + url.getId()))
+            .andDo(print())
+            .andExpect(status().isNoContent());
     }
 }
