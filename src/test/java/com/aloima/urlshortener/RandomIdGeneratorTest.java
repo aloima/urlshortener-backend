@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.security.SecureRandom;
-
 import org.junit.jupiter.api.Test;
 
 import com.aloima.urlshortener.component.RandomIdGenerator;
@@ -13,7 +11,7 @@ import com.aloima.urlshortener.component.RandomIdGenerator;
 class RandomIdGeneratorTest {
     @Test
     void generateValidValue() throws Exception {
-        RandomIdGenerator random = new RandomIdGenerator(new SecureRandom());
+        RandomIdGenerator random = new RandomIdGenerator();
         assertNotNull(random);
 
         long id = random.generateRandomId();
@@ -25,7 +23,7 @@ class RandomIdGeneratorTest {
 
     @Test
     void checkValidConversions() throws Exception {
-        RandomIdGenerator random = new RandomIdGenerator(new SecureRandom());
+        RandomIdGenerator random = new RandomIdGenerator();
         assertNotNull(random);
 
         long generated = random.generateRandomId();
