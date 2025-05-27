@@ -23,7 +23,7 @@ public class URLService {
     }
 
     public Optional<URLModel> getURL(String id) {
-        return this.urlRepository.findById(id);
+        return this.urlRepository.findById(Long.toString(random.stringToId(id)));
     }
 
     public void saveURL(URLModel data) {
@@ -37,6 +37,7 @@ public class URLService {
         deletionRepository.save(deletion);
 
         data.setId(urlId);
+        data.setDeletionId(deletionId);
         urlRepository.save(data);
     }
 

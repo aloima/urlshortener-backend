@@ -11,8 +11,11 @@ public class URLModel implements Serializable {
     @Id
     private long id;
 
-    private final String value;
-    private final Date createdAt;
+    @SuppressWarnings("unused")
+    private long deletionId;
+
+    private String value;
+    private Date createdAt;
     private long clicks;
 
     public URLModel() {
@@ -32,6 +35,10 @@ public class URLModel implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setDeletionId(long deletionId) {
+        this.deletionId = deletionId;
     }
 
     public String getValue() {
