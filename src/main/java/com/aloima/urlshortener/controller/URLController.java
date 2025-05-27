@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aloima.urlshortener.exception.ResourceNotFoundException;
@@ -45,9 +44,10 @@ public class URLController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteURL(@PathVariable String id) {
+    public ResponseEntity<?> deleteURL(@PathVariable String id) {
         boolean response = urlService.deleteURL(id);
         if (!response) throw new ResourceNotFoundException("URL with id '" + id + "' cannot be found, so it cannot be deleted.");
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
