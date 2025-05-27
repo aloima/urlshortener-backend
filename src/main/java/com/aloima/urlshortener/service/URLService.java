@@ -27,11 +27,11 @@ public class URLService {
     }
 
     public void saveURL(URLModel data) {
-        String urlId = this.random.generateRandomId();
-        String deletionId = this.random.generateRandomId();
+        long urlId = this.random.generateRandomId();
+        long deletionId = this.random.generateRandomId();
 
-        while (this.urlRepository.existsById(urlId)) urlId = this.random.generateRandomId();
-        while (this.deletionRepository.existsById(deletionId)) deletionId = this.random.generateRandomId();
+        while (this.urlRepository.existsById(Long.toString(urlId))) urlId = this.random.generateRandomId();
+        while (this.deletionRepository.existsById(Long.toString(deletionId))) deletionId = this.random.generateRandomId();
 
         URLDeletionModel deletion = new URLDeletionModel(deletionId, urlId);
         deletionRepository.save(deletion);
@@ -45,7 +45,7 @@ public class URLService {
         if (deletion.isEmpty()) return false;
 
         URLDeletionModel deletionModel = deletion.get();
-        this.urlRepository.deleteById(deletionModel.getValue());
+        this.urlRepository.deleteById(Long.toString(deletionModel.getValue()));
         this.deletionRepository.delete(deletionModel);
 
         return true;

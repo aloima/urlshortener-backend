@@ -50,14 +50,14 @@ class UrlControllerTests {
 
     @Test
     void validURL() throws Exception {
-        when(random.generateRandomId()).thenReturn("ranUrl");
+        when(random.generateRandomId()).thenReturn(1L);
 
         MockHttpServletResponse response = this.mockMvc.perform(post("/url").content("https://example.com/"))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
             .andExpectAll(
-                jsonPath("$.id").value("ranUrl"),
+                jsonPath("$.id").value(1L),
                 jsonPath("$.value").value("https://example.com/"),
                 jsonPath("$.clicks").value(0),
                 jsonPath("$.createdAt").isString()
@@ -67,7 +67,7 @@ class UrlControllerTests {
         String responseContent = response.getContentAsString();
         URLModel url = (new ObjectMapper()).readValue(responseContent, URLModel.class);
 
-        when(urlRepository.findById(url.getId())).thenReturn(Optional.of(url));
+        when(urlRepository.findById(Long.toString(url.getId()))).thenReturn(Optional.of(url));
 
         this.mockMvc.perform(get("/url/" + url.getId()))
             .andDo(print())

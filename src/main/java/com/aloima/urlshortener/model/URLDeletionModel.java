@@ -8,15 +8,15 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("URLDeletion")
 public class URLDeletionModel implements Serializable {
     @Id
-    private String id;
-    private String value;
+    private long id;
+    private long value;
 
-    public URLDeletionModel(String id, String value) {
+    public URLDeletionModel(long id, long value) {
         this.id = id;
         this.value = value;
     }
 
-    public String getValue() {
+    public long getValue() {
         return this.value;
     }
 }

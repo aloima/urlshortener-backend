@@ -9,7 +9,7 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash("URL")
 public class URLModel implements Serializable {
     @Id
-    private String id;
+    private long id;
 
     private final String value;
     private final Date createdAt;
@@ -26,11 +26,11 @@ public class URLModel implements Serializable {
         this.clicks = 0;
     }
 
-    public String getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
