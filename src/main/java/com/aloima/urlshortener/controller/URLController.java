@@ -37,7 +37,6 @@ public class URLController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<URLModel> newURL(@RequestBody String value) {
         URLModel data = new URLModel(value, new Date());
         urlService.saveURL(data);
