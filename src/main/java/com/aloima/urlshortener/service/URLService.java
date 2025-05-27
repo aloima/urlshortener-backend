@@ -42,7 +42,7 @@ public class URLService {
     }
 
     public boolean deleteURL(String id) {
-        Optional<URLDeletionModel> deletion = this.deletionRepository.findById(id);
+        Optional<URLDeletionModel> deletion = this.deletionRepository.findById(Long.toString(random.stringToId(id)));
         if (deletion.isEmpty()) return false;
 
         URLDeletionModel deletionModel = deletion.get();
