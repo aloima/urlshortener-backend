@@ -53,7 +53,7 @@ public class URLModel implements Serializable {
         return this.clicks;
     }
 
-    public void incrementClicks() {
+    public void increaseClicks() {
         this.clicks += 1;
     }
 }
