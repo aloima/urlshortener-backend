@@ -91,4 +91,20 @@ class UrlControllerTests {
             .andDo(print())
             .andExpect(status().isNoContent());
     }
+
+    @Test
+    void createValidURL() throws Exception {
+        String value = "https://example.com/";
+
+        this.mockMvc.perform(post("/url").content(value))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpectAll(
+                jsonPath("$.id").value(0L),
+                jsonPath("$.value").value(value),
+                jsonPath("$.clicks").value(0),
+                jsonPath("$.createdAt").isString()
+            );
+    }
 }
