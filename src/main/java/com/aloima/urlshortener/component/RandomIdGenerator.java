@@ -6,10 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RandomIdGenerator {
-    public final SecureRandom random = new SecureRandom();
+    public final SecureRandom generator;
+
+    public RandomIdGenerator() {
+        this.generator = new SecureRandom();
+        this.generator.setSeed(this.generator.generateSeed(12));
+    }
 
     public long generateRandomId() {
-        return this.random.nextLong(1, (long) Math.pow(59, 7));
+        return this.generator.nextLong(1, (long) Math.pow(59, 7));
     }
 
     public String idToString(long id) {
