@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RandomIdGenerator {
-    public final SecureRandom generator;
+    private final SecureRandom generator;
 
     public RandomIdGenerator() {
         this.generator = new SecureRandom();
