@@ -18,7 +18,7 @@ public class RandomIdGenerator {
     }
 
     public String idToString(long id) {
-        String charset = "12345689abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"; // without 0, l, I
+        String charset = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"; // without 0, l, I
         StringBuilder result = new StringBuilder("");
 
         while (id > 0) {
@@ -30,7 +30,7 @@ public class RandomIdGenerator {
     }
 
     public long stringToId(String value) {
-        String charset = "12345689abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"; // without 0, l, I
+        String charset = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ"; // without 0, l, I
         long id = 0;
 
         int length = value.length();
