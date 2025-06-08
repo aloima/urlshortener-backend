@@ -107,4 +107,32 @@ class UrlControllerTests {
                 jsonPath("$.createdAt").isString()
             );
     }
+
+    @Test
+    void createValidURLForExistingId() throws Exception {
+        when(this.random.generateRandomId()).thenReturn(
+            1L, // for url
+            2L, // for urlDeletion
+            1L, // for url on loop
+            1L, // for url on loop (finish)
+            2L, // for urlDeletion on loop
+            2L // for urlDeletion on loop (finish)
+        );
+
+        when(this.urlRepository.existsById(Long.toString(1L))).thenReturn(true, true, false);
+        when(this.urlDeletionRepository.existsById(Long.toString(2L))).thenReturn(true, true, false);
+
+        String value = "https://example.com/";
+
+        this.mockMvc.perform(post("/url").content(value))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpectAll(
+                jsonPath("$.id").value(1L),
+                jsonPath("$.value").value(value),
+                jsonPath("$.clicks").value(0),
+                jsonPath("$.createdAt").isString()
+            );
+    }
 }
