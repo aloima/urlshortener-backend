@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import com.aloima.urlshortener.component.RandomIdGenerator;
 
-class RandomIdGeneratorTest {
+class RandomIdGeneratorTests {
     private RandomIdGenerator generator;
 
     @BeforeEach
