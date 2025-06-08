@@ -18,11 +18,6 @@ public class URLModel implements Serializable {
     private Date createdAt;
     private long clicks;
 
-    public URLModel() {
-        this.value = null;
-        this.createdAt = null;
-    }
-
     public URLModel(String value, Date createdAt) {
         this.value = value;
         this.createdAt = createdAt;
