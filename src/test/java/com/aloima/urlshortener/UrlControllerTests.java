@@ -95,8 +95,9 @@ class UrlControllerTests {
     @Test
     void createValidURL() throws Exception {
         String value = "https://example.com/";
+        String content = String.format("{\"value\": \"%s\"}", value);
 
-        this.mockMvc.perform(post("/url").content(value))
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
@@ -123,8 +124,9 @@ class UrlControllerTests {
         when(this.urlDeletionRepository.existsById(Long.toString(2L))).thenReturn(true, true, false);
 
         String value = "https://example.com/";
+        String content = String.format("{\"value\": \"%s\"}", value);
 
-        this.mockMvc.perform(post("/url").content(value))
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
             .andDo(print())
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
