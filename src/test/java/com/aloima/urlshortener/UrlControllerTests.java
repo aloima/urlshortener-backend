@@ -189,4 +189,40 @@ class UrlControllerTests {
                 jsonPath("$.createdAt").isString()
             );
     }
+
+    @Test
+    void goValidURL() throws Exception {
+        String value = "https://example.com/";
+
+        URLModel url = new URLModel(value, new Date(), false);
+        url.setId(1L);
+        url.setDeletionId(187L);
+
+        when(urlRepository.findById(Long.toString(random.stringToId("1")))).thenReturn(Optional.of(url));
+
+        this.mockMvc.perform(get("/url/go/1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().string(value));
+
+        this.mockMvc.perform(get("/url/1"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpectAll(
+                jsonPath("$.id").value(1L),
+                jsonPath("$.value").value(value),
+                jsonPath("$.clicks").value(1),
+                jsonPath("$.createdAt").isString()
+            );
+    }
+
+    @Test
+    void goInvalidURL() throws Exception {
+        this.mockMvc.perform(get("/url/go/unknown"))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().json("{\"error\": \"URL with id 'unknown' cannot be found.\", \"uri\": \"/url/go/unknown\"}"));
+    }
 }
