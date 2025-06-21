@@ -37,6 +37,18 @@ public class URLController {
         return ResponseEntity.status(HttpStatus.OK).body(url.get());
     }
 
+    @GetMapping("/go/{id}")
+    public ResponseEntity<String> goURL(@PathVariable("id") String id) {
+        Optional<URLModel> urlField = urlService.getURL(id);
+        if (urlField.isEmpty()) throw new ResourceNotFoundException("URL with id '" + id + "' cannot be found.");
+
+        URLModel url = urlField.get();
+        url.increaseClicks();
+        urlService.overwriteURL(url.getId(), url);
+
+        return ResponseEntity.status(HttpStatus.OK).body(url.getValue());
+    }
+
     @PostMapping
     public ResponseEntity<URLModel> newURL(@RequestBody JsonNode input) {
         if (!input.has("value")) throw new InvalidFormatException("Data must be include 'value' member.", input);

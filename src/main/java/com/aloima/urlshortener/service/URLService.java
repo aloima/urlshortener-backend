@@ -41,6 +41,13 @@ public class URLService {
         urlRepository.save(data);
     }
 
+    public boolean overwriteURL(long id, URLModel data) {
+        if (data.getId() != id) return false;
+
+        urlRepository.save(data);
+        return true;
+    }
+
     public boolean deleteURL(String id) {
         Optional<URLDeletionModel> deletion = this.deletionRepository.findById(Long.toString(random.stringToId(id)));
         if (deletion.isEmpty()) return false;
