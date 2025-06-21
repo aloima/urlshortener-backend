@@ -50,7 +50,7 @@ class UrlControllerTests {
 
     @Test
     void getValidURL() throws Exception {
-        URLModel url = new URLModel("https://example.com/", new Date());
+        URLModel url = new URLModel("https://example.com/", new Date(), false);
         url.setId(1L);
         url.setDeletionId(187L);
 
@@ -78,7 +78,7 @@ class UrlControllerTests {
 
     @Test
     void deleteValidURL() throws Exception {
-        URLModel url = new URLModel("https://example.com/", new Date());
+        URLModel url = new URLModel("https://example.com/", new Date(), false);
         url.setId(1L);
         url.setDeletionId(187L);
 

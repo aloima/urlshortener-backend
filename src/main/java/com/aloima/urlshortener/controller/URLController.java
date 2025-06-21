@@ -47,6 +47,14 @@ public class URLController {
         
         if (rawValue.isBlank()) throw new InvalidFormatException("'value' in data must be a filled string.", input);
 
+        JsonNode listable = input.path("listable");
+        boolean listableValue = false;
+
+        if (!listable.isMissingNode()) {
+            if (!listable.isBoolean()) throw new InvalidFormatException("'listable' in data must be a boolean.", input);
+            listableValue = listable.asBoolean();
+        }
+
         URLModel data = new URLModel(value.asText(), new Date(), listableValue);
         urlService.saveURL(data);
 

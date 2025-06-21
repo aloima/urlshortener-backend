@@ -17,15 +17,21 @@ public class URLModel implements Serializable {
     private String value;
     private Date createdAt;
     private long clicks;
+    private boolean listable;
 
-    public URLModel(String value, Date createdAt) {
+    public URLModel(String value, Date createdAt, boolean listable) {
         this.value = value;
         this.createdAt = createdAt;
         this.clicks = 0;
+        this.listable = listable;
     }
 
     public long getId() {
         return this.id;
+    }
+
+    public boolean isListable() {
+        return this.listable;
     }
 
     public void setId(long id) {
