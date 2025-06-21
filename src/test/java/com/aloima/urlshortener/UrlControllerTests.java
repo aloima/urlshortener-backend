@@ -110,6 +110,58 @@ class UrlControllerTests {
     }
 
     @Test
+    void createURLWithInvalidValue() throws Exception {
+        String content = "{\"value\": true}";
+
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.error").value("'value' in data must be a string."),
+                jsonPath("$.uri").value("/url")
+            );
+    }
+
+    @Test
+    void createURLWithMissingValue() throws Exception {
+        String content = "{}";
+
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.error").value("Data must be include 'value' member."),
+                jsonPath("$.uri").value("/url")
+            );
+    }
+
+    @Test
+    void createURLWithEmptyValue() throws Exception {
+        String content = "{\"value\": \"\"}";
+
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.error").value("'value' in data must be a filled string."),
+                jsonPath("$.uri").value("/url")
+            );
+    }
+
+    @Test
+    void createURLWithInvalidListable() throws Exception {
+        String content = "{\"value\": \"https://example.com/\", \"listable\": 22}";
+
+        this.mockMvc.perform(post("/url").content(content).contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.error").value("'listable' in data must be a boolean."),
+                jsonPath("$.uri").value("/url")
+            );
+    }
+
+    @Test
     void createValidURLForExistingId() throws Exception {
         when(this.random.generateRandomId()).thenReturn(
             1L, // for url
