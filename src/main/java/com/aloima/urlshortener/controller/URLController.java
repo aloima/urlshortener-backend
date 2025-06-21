@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aloima.urlshortener.exception.InvalidFormatException;
 import com.aloima.urlshortener.exception.ResourceNotFoundException;
 import com.aloima.urlshortener.model.URLModel;
 import com.aloima.urlshortener.service.URLService;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping(value = "/url")
@@ -36,8 +38,16 @@ public class URLController {
     }
 
     @PostMapping
-    public ResponseEntity<URLModel> newURL(@RequestBody String value) {
-        URLModel data = new URLModel(value, new Date());
+    public ResponseEntity<URLModel> newURL(@RequestBody JsonNode input) {
+        if (!input.has("value")) throw new InvalidFormatException("Data must be include 'value' member.", input);
+        JsonNode value = input.path("value");
+
+        if (!value.isTextual()) throw new InvalidFormatException("'value' in data must be a string.", input);
+        String rawValue = value.asText();
+        
+        if (rawValue.isBlank()) throw new InvalidFormatException("'value' in data must be a filled string.", input);
+
+        URLModel data = new URLModel(value.asText(), new Date(), listableValue);
         urlService.saveURL(data);
 
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(data);
