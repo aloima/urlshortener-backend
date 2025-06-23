@@ -1,6 +1,9 @@
 package com.aloima.urlshortener.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,26 @@ public class URLService {
 
     public Optional<URLModel> getURL(String id) {
         return this.urlRepository.findById(Long.toString(random.stringToId(id)));
+    }
+
+    public List<URLModel> listURLs(long start, long end) {
+        Iterable<URLModel> iterable = this.urlRepository.findAll();
+        List<URLModel> list = StreamSupport.stream(iterable.spliterator(), true).collect(Collectors.toList());
+        list.removeIf((url) -> !url.isListable());
+
+        if (start == -1) {
+            return list;
+        } else {
+            return list.subList((int) start, (int) end);
+        }
+    }
+
+    public long countAllURL() {
+        return this.urlRepository.count();
+    }
+
+    public long countListableURL() {
+        return this.listURLs(-1, 0).size();
     }
 
     public void saveURL(URLModel data) {

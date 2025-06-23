@@ -1,6 +1,9 @@
 package com.aloima.urlshortener.controller;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aloima.urlshortener.exception.InvalidFormatException;
@@ -35,6 +39,24 @@ public class URLController {
         if (url.isEmpty()) throw new ResourceNotFoundException("URL with id '" + id + "' cannot be found.");
 
         return ResponseEntity.status(HttpStatus.OK).body(url.get());
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> listURLs(@RequestParam(defaultValue = "-1") long start, @RequestParam(defaultValue = "0") long end) {
+        long totalCount = urlService.countAllURL();
+        long listableCount = urlService.countListableURL();
+
+        if (end > listableCount) end = listableCount;
+        if (start < -1) start = 0;
+
+        List<URLModel> data = urlService.listURLs(start, end);
+        Map<String, Object> body = new HashMap<>();
+
+        body.put("totalCount", totalCount);
+        body.put("listableCount", listableCount);
+        body.put("data", data);
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @GetMapping("/go/{id}")
