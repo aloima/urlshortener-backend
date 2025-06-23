@@ -4,7 +4,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
@@ -145,6 +147,84 @@ class UrlControllerTests {
             .andExpectAll(
                 jsonPath("$.error").value("'value' in data must be a filled string."),
                 jsonPath("$.uri").value("/url")
+            );
+    }
+
+    @Test
+    void listURLWithQueries() throws Exception {
+        String firstValue = "https://example-first.com/";
+        String secondValue = "https://example-second.com/";
+        String thirdValue = "https://example-third.com/";
+
+        URLModel firstURL = new URLModel(firstValue, new Date(), false);
+        firstURL.setId(1L);
+        firstURL.setDeletionId(2L);
+
+        URLModel secondURL = new URLModel(secondValue, new Date(), true);
+        secondURL.setId(3L);
+        secondURL.setDeletionId(4L);
+
+        URLModel thirdURL = new URLModel(thirdValue, new Date(), true);
+        thirdURL.setId(5L);
+        thirdURL.setDeletionId(6L);
+
+        when(urlRepository.count()).thenReturn(3L);
+        when(urlRepository.findAll()).thenReturn(Arrays.asList(firstURL, secondURL, thirdURL));
+
+        this.mockMvc.perform(get("/url/list?start=0&end=2"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.data").isArray(),
+                jsonPath("$.data").value(hasSize(2)),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(secondURL.getId(), secondURL.getValue())).exists(),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(thirdURL.getId(), thirdURL.getValue())).exists(),
+                jsonPath("$.totalCount").value(3),
+                jsonPath("$.listableCount").value(2)
+            );
+
+        this.mockMvc.perform(get("/url/list?start=1&end=2"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.data").isArray(),
+                jsonPath("$.data").value(hasSize(1)),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(thirdURL.getId(), thirdURL.getValue())).exists(),
+                jsonPath("$.totalCount").value(3),
+                jsonPath("$.listableCount").value(2)
+            );
+
+        this.mockMvc.perform(get("/url/list"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.data").value(hasSize(2)),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(secondURL.getId(), secondURL.getValue())).exists(),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(thirdURL.getId(), thirdURL.getValue())).exists(),
+                jsonPath("$.totalCount").value(3),
+                jsonPath("$.listableCount").value(2)
+            );
+
+        this.mockMvc.perform(get("/url/list?start=-4&end=4"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.data").value(hasSize(2)),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(secondURL.getId(), secondURL.getValue())).exists(),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(thirdURL.getId(), thirdURL.getValue())).exists(),
+                jsonPath("$.totalCount").value(3),
+                jsonPath("$.listableCount").value(2)
+            );
+
+        this.mockMvc.perform(get("/url/list?start=-1&end=4"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.data").value(hasSize(2)),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(secondURL.getId(), secondURL.getValue())).exists(),
+                jsonPath("$.data[?(@.id == %d && @.value == '%s')]".formatted(thirdURL.getId(), thirdURL.getValue())).exists(),
+                jsonPath("$.totalCount").value(3),
+                jsonPath("$.listableCount").value(2)
             );
     }
 
