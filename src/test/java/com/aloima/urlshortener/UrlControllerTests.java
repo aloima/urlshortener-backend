@@ -85,7 +85,7 @@ class UrlControllerTests {
         url.setId(1L);
         url.setDeletionId(187L);
 
-        URLDeletionModel urlDeletion = new URLDeletionModel(1L, 187L);
+        URLDeletionModel urlDeletion = new URLDeletionModel(187L, 1L);
 
         when(urlRepository.findById(Long.toString(random.stringToId("1")))).thenReturn(Optional.of(url));
         when(urlDeletionRepository.findById(Long.toString(random.stringToId("13")))).thenReturn(Optional.of(urlDeletion));
