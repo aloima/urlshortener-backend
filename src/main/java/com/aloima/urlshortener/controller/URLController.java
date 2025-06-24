@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.aloima.urlshortener.exception.InvalidFormatException;
 import com.aloima.urlshortener.exception.ResourceNotFoundException;
 import com.aloima.urlshortener.model.URLModel;
 import com.aloima.urlshortener.service.URLService;
-import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping(value = "/url")
@@ -72,7 +75,7 @@ public class URLController {
     }
 
     @PostMapping
-    public ResponseEntity<URLModel> newURL(@RequestBody JsonNode input) {
+    public ResponseEntity<Map<String, Object>> newURL(@RequestBody JsonNode input) {
         if (!input.has("value")) throw new InvalidFormatException("Data must be include 'value' member.", input);
         JsonNode value = input.path("value");
 
@@ -90,9 +93,13 @@ public class URLController {
         }
 
         URLModel data = new URLModel(value.asText(), new Date(), listableValue);
-        urlService.saveURL(data);
+        long deletionId = urlService.saveURL(data);
 
-        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(data);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> body = mapper.convertValue(data, new TypeReference<Map<String, Object>>() {});
+        body.put("deletionId", deletionId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(body);
     }
 
     @DeleteMapping("/{id}")

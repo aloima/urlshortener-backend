@@ -49,7 +49,7 @@ public class URLService {
         return this.listURLs(-1, 0).size();
     }
 
-    public void saveURL(URLModel data) {
+    public long saveURL(URLModel data) {
         long urlId = this.random.generateRandomId();
         long deletionId = this.random.generateRandomId();
 
@@ -62,6 +62,8 @@ public class URLService {
         data.setId(urlId);
         data.setDeletionId(deletionId);
         urlRepository.save(data);
+
+        return deletionId;
     }
 
     public boolean overwriteURL(long id, URLModel data) {
