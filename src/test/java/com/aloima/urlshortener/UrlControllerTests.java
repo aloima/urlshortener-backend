@@ -92,7 +92,8 @@ class UrlControllerTests {
 
         this.mockMvc.perform(delete("/url/" + url.getId()))
             .andDo(print())
-            .andExpect(status().isNoContent());
+            .andExpect(status().isOk())
+            .andExpect(content().string("1"));
     }
 
     @Test

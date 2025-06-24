@@ -73,14 +73,14 @@ public class URLService {
         return true;
     }
 
-    public boolean deleteURL(String id) {
+    public long deleteURL(String id) {
         Optional<URLDeletionModel> deletion = this.deletionRepository.findById(Long.toString(random.stringToId(id)));
-        if (deletion.isEmpty()) return false;
+        if (deletion.isEmpty()) return -1;
 
         URLDeletionModel deletionModel = deletion.get();
         this.urlRepository.deleteById(Long.toString(deletionModel.getValue()));
         this.deletionRepository.delete(deletionModel);
 
-        return true;
+        return deletionModel.getValue();
     }
 }

@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import com.aloima.urlshortener.model.URLModel;
 import com.aloima.urlshortener.service.URLService;
 
 @RestController
+@CrossOrigin
 @RequestMapping(value = "/url")
 public class URLController {
     private final URLService urlService;
@@ -103,10 +105,10 @@ public class URLController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteURL(@PathVariable String id) {
-        boolean response = urlService.deleteURL(id);
-        if (!response) throw new ResourceNotFoundException("URL with id '" + id + "' cannot be found, so it cannot be deleted.");
+    public ResponseEntity<String> deleteURL(@PathVariable String id) {
+        long response = urlService.deleteURL(id);
+        if (response == -1) throw new ResourceNotFoundException("URL with id '" + id + "' cannot be found, so it cannot be deleted.");
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).body(Long.toString(response));
     }
 }
