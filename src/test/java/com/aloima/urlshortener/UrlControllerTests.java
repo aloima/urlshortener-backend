@@ -66,6 +66,7 @@ class UrlControllerTests {
                 jsonPath("$.id").value(1L),
                 jsonPath("$.value").value("https://example.com/"),
                 jsonPath("$.clicks").value(0),
+                jsonPath("$.listable").value(false),
                 jsonPath("$.createdAt").isString()
             );
     }
@@ -104,10 +105,12 @@ class UrlControllerTests {
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE))
             .andExpectAll(
-                jsonPath("$.id").value(0L),
+                jsonPath("$.id").isNumber(),
+                jsonPath("$.deletionId").isNumber(),
                 jsonPath("$.value").value(value),
                 jsonPath("$.clicks").value(0),
-                jsonPath("$.createdAt").isString()
+                jsonPath("$.listable").value(false),
+                jsonPath("$.createdAt").isNumber()
             );
     }
 
@@ -266,7 +269,8 @@ class UrlControllerTests {
                 jsonPath("$.id").value(1L),
                 jsonPath("$.value").value(value),
                 jsonPath("$.clicks").value(0),
-                jsonPath("$.createdAt").isString()
+                jsonPath("$.listable").value(false),
+                jsonPath("$.createdAt").isNumber()
             );
     }
 
@@ -293,6 +297,7 @@ class UrlControllerTests {
                 jsonPath("$.id").value(1L),
                 jsonPath("$.value").value(value),
                 jsonPath("$.clicks").value(1),
+                jsonPath("$.listable").value(false),
                 jsonPath("$.createdAt").isString()
             );
     }
