@@ -1,5 +1,7 @@
 package com.aloima.urlshortener.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -85,6 +87,13 @@ public class URLController {
         String rawValue = value.asText();
         
         if (rawValue.isBlank()) throw new InvalidFormatException("'value' in data must be a filled string.", input);
+
+        try {
+            URI uri = new URI(rawValue);
+            if (uri.getScheme() == null || uri.getHost() == null) throw new InvalidFormatException("'value' in data must be a valid URL.", input);
+        } catch (URISyntaxException err) {
+            throw new InvalidFormatException("'value' in data must be a valid URL.", input);
+        }
 
         JsonNode listable = input.path("listable");
         boolean listableValue = false;
